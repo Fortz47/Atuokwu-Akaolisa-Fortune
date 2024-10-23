@@ -10,18 +10,18 @@ import { parseTime } from '../Utils/utils';
 import { Icredentials } from '../Utils/interface';
 
 
-class AuthControlller {
+class AuthController {
   static async register(req: Request, res: Response) {
     if (!validateCredentials(req, res)) return;
 
-    const { email, password } = req.body;
+    const { fullname, email, password } = req.body;
     const user = await UserService.getUser(email);
     if (user) {
       res.status(409).json({ error: 'Email already in use.' })
       return;
     }
 
-    const newUser = await UserService.createUser({ email, password });
+    const newUser = await UserService.createUser({ fullname, email, password });
     if (!newUser) {
       const error = 'An unexpected error occurred. Please try again later.';
       return res.status(500).json({ error });
@@ -38,39 +38,14 @@ class AuthControlller {
 
     if (!validateCredentials(req, res)) return;
 
-    const { email, username, password } = req.body;
-    const emailOrUsername = email || username;
-    const credentials: Icredentials = { emailOrUsername, password };
+    const { email, password } = req.body;
+    const credentials: Icredentials = { email, password };
     const validUser = await UserService.validateUser(credentials);
     if (!validUser) {
       return res.status(401).json({ error: 'Invalid email or password.' })
     }
     const userId = validUser._id.toString();
     const token = await generateToken(userId, validUser.email);
-
-    res.json({ msg: 'Login successful.', token });
-  }
-
-  static async loginAdmin(req: Request, res: Response) {
-    const payload = await getToken(req, res);
-    if (payload && payload.role === 'admin') {
-      return res.json({ msg: 'Already Logged in.' });
-    }
-
-    if (!validateCredentials(req, res)) return;
-
-    const { email, username, password } = req.body;
-    const emailOrUsername = email || username;
-    const credentials: Icredentials = { emailOrUsername, password };
-    const validUser = await UserService.validateUser(credentials);
-    if (!validUser) {
-      return res.status(401).json({ error: 'Invalid email or password.' });
-    }
-    if (validUser.role !== 'admin') {
-      return res.status(401).json({ error: 'Admin only.' });
-    }
-    const userId = validUser._id.toString();
-    const token = await generateToken(userId, validUser.email, 'admin');
 
     res.json({ msg: 'Login successful.', token });
   }
@@ -130,4 +105,4 @@ async function removeToken(token: string) {
   await redisClient.del(key);
 }
 
-export default AuthControlller;
+export default AuthController;

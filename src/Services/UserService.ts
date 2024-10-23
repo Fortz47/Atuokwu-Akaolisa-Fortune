@@ -14,7 +14,7 @@ class UserService {
       if (!format) {
         const user = await User.findOne({ email: email })
           .lean(true)
-          .select(['_id', 'email', 'role']);
+          .select(['_id', 'fullname', 'email', 'role']);
 
         return user;
       }
@@ -45,7 +45,7 @@ class UserService {
     const fields = Object.keys(update);
 
     fields.forEach((field: string) => {
-      const controlList = ['email', 'createdAt', 'updatedAt'];
+      const controlList = ['email', 'role', 'createdAt', 'updatedAt'];
       if (controlList.includes(field)) delete update[field];
     });
     

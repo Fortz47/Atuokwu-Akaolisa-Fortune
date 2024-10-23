@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start-server": "NODE_ENV=production ts-node ./src/server.ts",
+    "start-server": "ts-node ./src/server.ts",
     "start-worker": "ts-node ./src/worker.ts",
     "dev": "nodemon --exec ts-node ./src/server.ts",
-    "test": "NODE_ENV=test mocha --exit"
+    "test": "mocha --exit"
   },
   "author": "",
   "license": "ISC",

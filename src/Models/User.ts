@@ -3,9 +3,10 @@ const bcrypt = require('bcrypt');
 
 
 export interface IUser {
-  username: string,
+  fullname: string,
   email: string,
   password: string,
+  role?: string,
   createdAt?: Date,
   updatedAt?: Date,
 }
@@ -18,7 +19,7 @@ type UserModel = Model<IUser, {}, IUserMethods>;
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
-    username: { type: String, required: true },
+    fullname: { type: String, required: true },
     email: { type: String, required: true },
     password: {
       type: String,
@@ -27,6 +28,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       maxlength: 30,
       select: false
     },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
   },
   { timestamps: true }
 );

@@ -4,19 +4,8 @@ const dotenvExpand = require('dotenv-expand');
 const env = dotenv.config();
 dotenvExpand.expand(env);
 
-const config = {
-  development: {
-    url: process.env.DEV_DB_URL
-  },
-  test: {
-    url: process.env.TEST_DB_URL
-  },
-  production: {
-    url: process.env.PROD_DB_URL
-  },
+const dbConfig = {
+  url: process.env.DB_URL || 'mongodb://127.0.0.1:27017/API_DB'
 };
 
-const mode = process.env.NODE_ENV || 'development';
-
-// @ts-ignore
-export default config[mode] 
+export default dbConfig 
